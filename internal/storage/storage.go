@@ -19,6 +19,8 @@ type Api interface {
 	DeleteUserDrug(id int) error
 	AddUserDrug(drug models.Drug, id int) error
 	EditCourse(course models.Course) error
+	GetDrugByName(name string) (*models.Drug, error)
+	GetDrugs() ([]models.Drug, error)
 }
 
 type Storage struct {

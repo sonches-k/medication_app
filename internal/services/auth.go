@@ -14,7 +14,6 @@ import (
 const (
 	salt       = "sklf12kdkfks21kmafzzxcifds"
 	signingKey = "lasdjqi8932jkdn#aqwxcvn1wxcllkas"
-	tokenTTL   = 12 * time.Hour
 )
 
 type AuthService struct {
@@ -28,7 +27,7 @@ type tokenCLaims struct {
 func NewAuthService(repo storage.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
-func (service *AuthService) GenerateToken(username, password string) (string, error) {
+func (service *AuthService) GenerateToken(username, password string, tokenTTL time.Duration) (string, error) {
 	user, err := service.repo.GetUserByEmailAndPassword(username, generatePasswrodHash(password))
 	if err != nil {
 		return "", err

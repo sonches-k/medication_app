@@ -1,13 +1,15 @@
 package services
 
 import (
+	"time"
+
 	"github.com/sonches-k/medication_app/internal/models"
 	"github.com/sonches-k/medication_app/internal/storage"
 )
 
 type Authorization interface {
 	CreateUser(user models.User) (int, error)
-	GenerateToken(email, password string) (string, error)
+	GenerateToken(email, password string, tokenTTl time.Duration) (string, error)
 	ParseToken(token string) (int, error)
 }
 type Api interface {
@@ -19,6 +21,8 @@ type Api interface {
 	DeleteUserDrug(id int) error
 	AddUserDrug(drug models.Drug, id int) error
 	EditCourse(course models.Course) error
+	GetDrugByName(name string) (*models.Drug, error)
+	GetDrugs() ([]models.Drug, error)
 }
 
 type Service struct {

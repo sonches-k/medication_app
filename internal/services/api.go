@@ -37,3 +37,9 @@ func (s *ApiService) AddUserDrug(drug models.Drug, id int) error {
 func (s *ApiService) EditCourse(course models.Course) error {
 	return s.repo.EditCourse(course)
 }
+func (s *ApiService) GetDrugs() ([]models.Drug, error) {
+	return s.repo.GetDrugs()
+}
+func (s *ApiService) GetDrugByName(name string) (*models.Drug, error) {
+	return s.repo.GetDrugByName(name)
+}

@@ -5,5 +5,5 @@ type User struct {
 	Name         string `json:"name"`
 	PasswordHash string `json:"password" `
 	Email        string `json:"email"`
-	Drugs        []Drug `json:"drugs"`
+	Phone        string `json:"phone"`
 }

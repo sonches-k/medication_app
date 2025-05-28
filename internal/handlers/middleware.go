@@ -2,30 +2,33 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	authorizationHeader = "Authorization"
-	userCtx             = "userId"
+	accessHeader  = "access"
+	refreshHeader = "refresh"
+	userCtx       = "userId"
 )
 
 func (handler *Handler) userIndentity(context *gin.Context) {
-	header := context.GetHeader(authorizationHeader)
-	if header == "" {
+	accessHeader := context.GetHeader(accessHeader)
+	if accessHeader == "" {
 		newErrorResponse(context, http.StatusUnauthorized, "empty auth header")
 		return
 	}
-	headerParts := strings.Split(header, " ")
-	if len(headerParts) != 2 {
-		newErrorResponse(context, http.StatusUnauthorized, "invalid auth header")
+	refreshHeader := context.GetHeader(refreshHeader)
+	if refreshHeader == "" {
+		newErrorResponse(context, http.StatusUnauthorized, "empty auth header")
 		return
 	}
-	userId, err := handler.services.Authorization.ParseToken(headerParts[1])
+	userId, err := handler.services.Authorization.ParseToken(accessHeader)
 	if err != nil {
-		newErrorResponse(context, http.StatusUnauthorized, err.Error())
+		userId, err = handler.services.Authorization.ParseToken(refreshHeader)
+		if err != nil {
+			newErrorResponse(context, http.StatusUnauthorized, err.Error())
+		}
 	}
 	context.Set(userCtx, userId)
 

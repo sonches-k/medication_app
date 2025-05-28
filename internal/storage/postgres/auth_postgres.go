@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/sonches-k/medication_app/internal/models"
 )
@@ -26,14 +27,16 @@ func (s *AuthPostgres) CreateUser(user models.User) (int, error) {
 		if err := row.Scan(&id); err != nil {
 			return 0, err
 		}
+		fmt.Println(id)
 	} else {
+		fmt.Println(id)
 		return 0, errors.New("rows bug")
 	}
 	return id, nil
 }
 
 func (s *AuthPostgres) GetUserByEmailAndPassword(email, password string) (*models.User, error) {
-	rows, err := s.db.pool.Query(context.Background(), "SELECT id, name, password_hash, email, drugs FROM users;")
+	rows, err := s.db.pool.Query(context.Background(), "SELECT id, name, password_hash, email ,COALESCE(phone, '') FROM users WHERE email=$1 and password_hash=$2;", email, password)
 	if err != nil {
 		return nil, err
 	}
@@ -46,14 +49,13 @@ func (s *AuthPostgres) GetUserByEmailAndPassword(email, password string) (*model
 			&item.Name,
 			&item.PasswordHash,
 			&item.Email,
-			&item.Drugs,
+			&item.Phone,
 		)
+
 		if err != nil {
 			return nil, err
 		}
-		if item.Email == email && item.PasswordHash == password {
-			data = append(data, item)
-		}
+		data = append(data, item)
 	}
 	if len(data) == 0 {
 		return nil, errors.New("user not found")

@@ -14,6 +14,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+// @title        Medication API
+// @version      1.0
+// @description  This is an API for managing users, drugs, courses etc.
+// @host         localhost:8080
+// @BasePath     /api
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
